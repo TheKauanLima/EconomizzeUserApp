@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using EconomizzeUserApp.Services.Components;
+using Microsoft.Extensions.Logging;
 
 namespace EconomizzeUserApp
 {
@@ -16,8 +17,10 @@ namespace EconomizzeUserApp
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddSingleton<NavService>();
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 
