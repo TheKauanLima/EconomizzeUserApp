@@ -1,0 +1,16 @@
+﻿@page "/imagemodal"
+@namespace EconomizzeUserApp.Components.Modal
+
+<div class="container text-center" style="width: auto">
+    <div class="row">
+        <div class="col">
+            <img src="data:image/jpeg;base64,@image"
+                 style="max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: pointer;" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance? ModalInstance { get; set; }
+    [Parameter] public string? image { get; set; }
+}

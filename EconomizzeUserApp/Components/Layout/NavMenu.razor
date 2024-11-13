@@ -1,4 +1,71 @@
-﻿@* @inject IUserLoginServices UserLoginServices *@
+﻿@inject IUserLoginService UserLoginService
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">StoreApp</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="login">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Login
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Settings">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Settings
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dashboard">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dashboard
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="usuario">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuario
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="usuario-endereco">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuario Endereco
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="trocar-senha">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Trocar Senha
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="orcamento">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Orcamentos
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="prescricao">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Prescricoes
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@* @inject IUserLoginServices UserLoginServices
 @inject NavService NavService
 @inject NavigationManager Navigation
 <div class="top-row ps-3 navbar navbar-dark">
@@ -10,8 +77,8 @@
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        @foreach (var item in NavService.NavItems.Where(i => i.IsVisible))
+    <nav class="flex-column"> *@
+@*         @foreach (var item in NavService.NavItems.Where(i => i.IsVisible))
         {
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="@item.Url">
@@ -20,17 +87,17 @@
             </div>
         }
     </nav>
-</div>
+</div> *@
 
 @code {
-    protected override void OnInitialized()
-    {
-        NavService.OnChange += StateHasChanged;
-    }
+    // protected override void OnInitialized()
+    // {
+    //     NavService.OnChange += StateHasChanged;
+    // }
 
-    private void LogOut()
-    {
-        //UserLoginServices.LogOut();
-        NavService.OnChange -= StateHasChanged;
-    }
+    // private void LogOut()
+    // {
+    //     //UserLoginServices.LogOut();
+    //     NavService.OnChange -= StateHasChanged;
+    // }
 }

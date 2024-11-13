@@ -1,11 +1,13 @@
 ﻿namespace EconomizzeUserApp.Services.Classes
 {
-    public class MessageHandler
+    public class StatusHandler
     {
         public string Message { get; set; }
-        public MessageHandler()
+        public bool Error { get; set; }
+        public StatusHandler()
         {
             Message = string.Empty;
+            Error = false;
         }
     }
 }

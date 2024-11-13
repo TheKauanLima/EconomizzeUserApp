@@ -1,0 +1,89 @@
+﻿@page "/Criar"
+@inject IUserLoginService UserLoginService
+@inject IMapper Mapper
+@inject NavigationManager NavigationManager
+@* @inject CacheServices UserLoginSqliteServices *@
+@inject StatusHandler StatusHandler
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New User</title>
+    <link rel="stylesheet" href="~/css/styles.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h3 class="text-center">Criar Conta</h3>
+                <EditForm hidden=@HideRegistration Enhance Model="register" FormName="Register" OnValidSubmit="RegisterUserAsync">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+                    <div class="form-group mb-3">
+                        @* EMAIL *@
+                        <div class="input-group">
+                            @* <div class="input-group-prepend">
+                                <i class="bx bxs-user icon-style"></i>
+                            </div> *@
+                            <InputText @bind-Value="@register.Username" class="form-control" placeholder="Email"></InputText>
+                        </div>
+                        <div class="col">
+                            <ValidationMessage For="() => register.Username"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @* PASSWORD *@
+                        <div class="input-group">
+                            <InputText type="password" @bind-Value="@register.Password" class="form-control" placeholder="Senha"></InputText>
+                        </div>
+                        <div class="col">
+                            <ValidationMessage For="() => register.Password"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @* CONFIRM PASSWORD *@
+                        <div class="input-group">
+                            <InputText type="password" @bind-Value="@register.ConfirmPassword" class="form-control" placeholder="Senha"></InputText>
+                        </div>
+                        <div class="col">
+                            <ValidationMessage For="() => register.ConfirmPassword"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <InputNumber hidden @bind-Value="@register.UserId"></InputNumber>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary btn-block">Criar</button>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-danger btn-block">
+                            <i class="fab fa-google"></i> Login with Google
+                        </button>
+                    </div>
+                </EditForm>
+                <br />
+
+                <div style="@(isVisible ? "display:block;" : "display:none;")" class="alert alert-warning" role="alert">
+                    <EditForm Model="register" FormName="Verify" OnSubmit="Verify">
+
+                        <InputNumber hidden @bind-Value=@register.UserId></InputNumber>
+                        <InputText hidden @bind-Value=@UserUniqueId></InputText>
+                        <button type="submit" class="btn btn-danger btn-block">
+                            <i class="fab fa-google"></i> @message
+                        </button>
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

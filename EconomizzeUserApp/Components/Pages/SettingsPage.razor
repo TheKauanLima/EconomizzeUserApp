@@ -1,0 +1,99 @@
+﻿@page "/settings"
+@inject IUserLoginService UserLoginService
+@inject SettingsService SettingsService
+@inject NavigationManager Navigation
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4" style="width: 400px;">
+        <h3 class="text-center mb-4">Application Settings</h3>
+
+        @if (_settings != null)
+        {
+            <EditForm Model="_settings" OnValidSubmit="SaveSettings">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="alert alert-danger" />
+
+                <div class="form-group mb-3">
+                    <label for="storeId" class="form-label">User ID:</label>
+                    <InputNumber id="storeId" @bind-Value="_settings.UserId" class="form-control form-control-sm" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="storeUniqueId" class="form-label">User Unique ID:</label>
+                    <InputText id="storeUniqueId" @bind-Value="_userUniqueIdString" class="form-control form-control-sm" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="storeName" class="form-label">Username:</label>
+                    <InputText id="storeName" @bind-Value="_settings.Username" class="form-control form-control-sm" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="appVersion" class="form-label">App Version:</label>
+                    <InputText id="appVersion" @bind-Value="_settings.AppVersion" class="form-control form-control-sm" />
+                </div>
+
+                <!-- Hidden Version Date -->
+                <InputDate id="versionDate" @bind-Value="_settings.VersionDate" style="display: none;" />
+
+                <div class="form-group mb-3">
+                    <label for="startDate" class="form-label">Start Date:</label>
+                    <InputDate id="startDate" @bind-Value="_settings.StartDate" class="form-control form-control-sm" @onchange="UpdateEndDate" />
+                </div>
+
+                <!-- Hidden End Date -->
+                <InputDate id="endDate" @bind-Value="_settings.EndDate" style="display: none;" />
+
+                <!-- Hidden Is Active Checkbox -->
+                <InputCheckbox id="isActive" @bind-Value="_settings.IsActive" style="display: none;" />
+
+                <button type="submit" class="btn btn-primary w-100">Save</button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+
+
+@* @page "/settings"
+@inject EconomizzeUserApp.SettingsService SettingsService
+
+<h3>Settings</h3>
+
+<EditForm Model="@userSettings" OnValidSubmit="SaveSettings">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Theme:</label>
+        <InputSelect @bind-Value="userSettings.Theme">
+            <option value="Light">Light</option>
+            <option value="Dark">Dark</option>
+        </InputSelect>
+    </div>
+
+    <button type="submit">Save Settings</button>
+</EditForm>
+
+@if (message != null)
+{
+    <p>@message</p>
+}
+
+@code {
+    private UserSettingsModel userSettings = new UserSettingsModel();
+    private string? message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load settings on initialization
+        userSettings = await SettingsService.GetUserSettingsAsync();
+    }
+
+    private async Task SaveSettings()
+    {
+        await SettingsService.SaveUserSettingsAsync(userSettings);
+        message = "Settings saved successfully!";
+    }
+}
+ *@

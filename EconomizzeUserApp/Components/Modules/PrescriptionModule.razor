@@ -1,0 +1,212 @@
+﻿@page "/prescricao"
+@inject IUserLoginService UserLoginService
+@inject IPrescriptionService PrescriptionService
+@inject IQuoteService QuoteService
+@inject IMapper Mapper
+@inject StatusHandler StatusHandler
+@inject NavigationManager Navigation
+
+<h3>Prescription Management</h3>
+
+<!-- Form to add a new prescription -->
+<EditForm Model="@newPrescription" OnValidSubmit="SavePrescription">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- File Upload for Prescription -->
+    <div>
+        <label for="prescriptionFile">Prescription File</label>
+        <InputFile OnChange="HandleFileSelected" class="form-control" style="width: auto;" accept=".png,.jpg,.jpeg" />
+    </div>
+    @if (!string.IsNullOrEmpty(uploadedFileName))
+    {
+        <p>Uploaded File: @uploadedFileName</p>
+    }
+    <button class="btn btn-primary" disabled="@(!isFileSelected)">Submit Prescription</button>
+</EditForm>
+
+<hr />
+
+<!-- Display Prescriptions List -->
+<h4>Prescriptions List</h4>
+@if (prescriptions.Count == 0)
+{
+    <p>No prescriptions added yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Created On</th>
+                <th>Prescription Images</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prescription in prescriptions)
+            {
+                <tr>
+                    <td>@prescription.CreatedOn.ToShortDateString()</td>
+                    <td>
+                        @foreach (var image in prescriptionImages.Where(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
+                        {
+                            <img src="data:image/jpeg;base64,@image.Base64Image"
+                                 style="max-width: 150px; max-height: 150px; cursor: pointer;"
+                                 @onclick="(async () => await ShowImageModal(image.Base64Image))" />
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeletePrescription(prescription.PrescriptionUnique)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div style="position: fixed; bottom: 10px; right: 10px;">
+        <button class="btn btn-primary" @onclick="FinishQuote">Finish Quote</button>
+    </div>
+}
+
+<button class="btn btn-success" @onclick="SubmitFiles" disabled="@(!prescriptions.Any())">Submit Files</button>
+
+@code {
+    //prescriptions
+    private List<PrescriptionModel> prescriptions = new();
+    private List<PrescriptionImageModel> prescriptionImages = new();
+
+    //prescription images
+    private PrescriptionModel newPrescription = InitializeNewPrescription();
+    private PrescriptionImageModel newPrescriptionImage = new();
+    private IBrowserFile? selectedFile;
+    private string uploadedFileName = string.Empty;
+    private bool isFileSelected = false;
+
+    private int UserId;
+
+    [CascadingParameter] IModalService? Modal { get; set; }
+
+    protected override void OnInitialized()
+    {
+        UserId = UserLoginService.CurrentEntity!.UserId;
+        PrescriptionService.SetListValues();
+    }
+
+    #region PRESCRIPTION HANDLERS
+    private static PrescriptionModel InitializeNewPrescription() => new()
+        {
+            PrescriptionUnique = Guid.NewGuid(),
+            CreatedOn = DateTime.Now,
+            ModifiedOn = DateTime.Now
+        };
+
+    private void SavePrescription()
+    {
+        if (selectedFile == null) return;
+
+        var clonedImage = ClonePrescriptionImage();
+        prescriptions.Add(newPrescription);
+        prescriptionImages.Add(clonedImage);
+
+        ResetForm();
+    }
+
+    private void ResetForm()
+    {
+        newPrescription = InitializeNewPrescription();
+        newPrescriptionImage = new();
+        uploadedFileName = string.Empty;
+        isFileSelected = false;
+    }
+
+    private async Task SubmitFiles()
+    {
+        foreach (var prescription in prescriptions.ToList())
+        {
+            await AddPrescriptionToDB(prescription);
+            UpdateImagePrescriptionId(prescription);
+            await SavePrescriptionImages(prescription);
+        }
+    }
+
+    private void UpdateImagePrescriptionId(PrescriptionModel prescription)
+    {
+        foreach (var image in prescriptionImages.Where(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
+        {
+            image.PrescriptionId = prescription.PrescriptionId;
+        }
+    }
+
+    private async Task AddPrescriptionToDB(PrescriptionModel prescription)
+    {
+        prescription.QuoteId = QuoteService.CurrentEntity!.QuoteId;
+        var result = await PrescriptionService.CreateAsync(Mapper.Map<Prescription>(prescription));
+        var updatedPrescription = Mapper.Map<PrescriptionModel>(result);
+
+        var index = prescriptions.FindIndex(p => p.PrescriptionUnique == updatedPrescription.PrescriptionUnique);
+        if (index != -1)
+        {
+            prescriptions[index].PrescriptionId = updatedPrescription.PrescriptionId;
+        }
+    }
+
+    private async Task SavePrescriptionImages(PrescriptionModel prescription)
+    {
+        var imagesCopy = prescriptionImages.Where(img => img.PrescriptionId == prescription.PrescriptionId).ToList();
+        foreach (var image in imagesCopy)
+        {
+            var filePath = $"C:\\Development\\EconomizzeUserApp\\EconomizzeUserApp\\Storage\\{prescription.PrescriptionUnique}{image.FileExtension}";
+            image.ImageUrl = filePath;
+            var pi = Mapper.Map<PrescriptionImage>(image);
+            PrescriptionService.PrescriptionImages.Add(pi);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+            await File.WriteAllBytesAsync(filePath, image.ImageData!);
+        }
+    }
+    #endregion
+
+    #region IMAGE HANDLING
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        uploadedFileName = selectedFile.Name;
+        newPrescriptionImage.FileExtension = Path.GetExtension(uploadedFileName);
+
+        newPrescriptionImage.ImageData = await ConvertToByteArrayAsync(selectedFile);
+        newPrescriptionImage.Base64Image = Convert.ToBase64String(newPrescriptionImage.ImageData);
+        isFileSelected = true;
+    }
+
+    private static async Task<byte[]> ConvertToByteArrayAsync(IBrowserFile browserFile)
+    {
+        using var memoryStream = new MemoryStream();
+        await browserFile.OpenReadStream(5 * 1024 * 1024).CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    private PrescriptionImageModel ClonePrescriptionImage() => new()
+        {
+            PrescriptionUnique = newPrescription.PrescriptionUnique,
+            FileExtension = newPrescriptionImage.FileExtension,
+            ImageData = newPrescriptionImage.ImageData,
+            Base64Image = newPrescriptionImage.Base64Image
+        };
+    #endregion
+
+    #region MODAL & NAVIGATION
+    private async Task ShowImageModal(string image)
+    {
+        var parameters = new ModalParameters { { "image", image } };
+        var imageModal = Modal!.Show<ImageModal>("Selected Prescription", parameters);
+        await imageModal.Result;
+    }
+
+    private void FinishQuote() => Navigation.NavigateTo("/orcamento");
+
+    private void DeletePrescription(Guid prescriptionUnique)
+    {
+        prescriptions.RemoveAll(p => p.PrescriptionUnique == prescriptionUnique);
+        prescriptionImages.RemoveAll(img => img.PrescriptionUnique == prescriptionUnique);
+    }
+    #endregion
+}

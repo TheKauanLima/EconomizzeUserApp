@@ -1,0 +1,45 @@
+﻿@page "/prescriptions/{QuoteId:int}"
+@inject IPrescriptionService PrescriptionService
+@inject IMapper Mapper
+@inject NavigationManager Navigation
+
+<h4>Prescriptions for Quote ID: @QuoteId</h4>
+
+@if (prescriptions.Count == 0)
+{
+    <p>No prescriptions found for this quote.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Created On</th>
+                <th>Prescription Images</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prescription in prescriptions)
+            {
+                <tr>
+                    <td>@prescription.CreatedOn.ToShortDateString()</td>
+                    <td>
+                        @foreach (var prescriptionImage in prescriptionImages.Where(img => img.PrescriptionId == prescription.PrescriptionId))
+                        {
+                            <img src="@GetLocalImagePath(prescriptionImage.ImageUrl)"
+                                 alt="Prescription Image"
+                                 style="max-width: 150px; max-height: 150px; cursor: pointer;"
+                                 onerror="this.style.display='none'; console.error('Failed to load image:', this.src);"
+                                 @onclick="(async () => await ShowImageModal(prescriptionImage.ImageUrl))" />
+                            <p>@prescriptionImage.ImageUrl</p>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-secondary mt-3" @onclick="BackToQuotes">Back to Quotes</button>
+
+

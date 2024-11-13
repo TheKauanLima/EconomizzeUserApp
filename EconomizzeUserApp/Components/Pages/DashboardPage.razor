@@ -1,0 +1,60 @@
+﻿@page "/dashboard"
+
+<h3 class="text-primary mb-4">Dashboard</h3>
+
+<!-- Tab Navigation -->
+<ul class="nav nav-tabs mb-4">
+    @* <li class="nav-item">
+    <button class="nav-link @(activeTab == "Info" ? "active" : "")" @onclick='() => SelectTab("Info")'>Info</button>
+    </li> *@
+    <li class="nav-item">
+        <button class="nav-link @(activeTab == "Quotes" ? "active" : "")" @onclick='() => SelectTab("Quotes")'>Quotes</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(activeTab == "Metrics" ? "active" : "")" @onclick='() => SelectTab("Metrics")'>Metrics</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link @(activeTab == "Admin" ? "active" : "")" @onclick='() => SelectTab("Admin")'>Admin</button>
+    </li>
+
+</ul>
+
+<!-- Tab Content -->
+@* @if (activeTab == "Info")
+{
+    <div>
+        <h4>Info</h4>
+        <p>This is the Info tab content.</p>
+    </div>
+}
+else  *@
+@if (activeTab == "Quotes")
+{
+    <div>
+        <h4>Quotes</h4>
+        <p>This is the Quotes tab content.</p>
+    </div>
+}
+else if (activeTab == "Admin")
+{
+    <div>
+        <h4>Admin</h4>
+        <p>This is the Admin tab content.</p>
+    </div>
+}
+else if (activeTab == "Metrics")
+{
+    <div>
+        <h4>Metrics</h4>
+        <p>This is the Metrics tab content.</p>
+    </div>
+}
+
+@code {
+    private string activeTab = "Quotes";
+
+    private void SelectTab(string tabName)
+    {
+        activeTab = tabName;
+    }
+}

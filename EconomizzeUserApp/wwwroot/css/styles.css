@@ -1,0 +1,15 @@
+﻿*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+.icon-style {
+    font-size: 1.5rem; /* Adjust size as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px; /* Optional: add horizontal padding */
+    color: #666; /* Optional: adjust color */
+}

@@ -1,0 +1,53 @@
+﻿@page "/usuario"
+@inject IUserService UserService
+@inject IUserLoginService UserLoginService
+@inject IMapper Mapper
+
+<h3 class="text-primary mb-4">Add User Details</h3>
+
+<!-- Form to Add or Update State -->
+<EditForm Model="_userDetailModel" OnValidSubmit="HandleSave">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" />
+
+    <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <InputText @bind-Value="_userDetailModel.UserFirstName" class="form-control" placeholder="Entre Primeiro Nome" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Middle Name</label>
+        <InputText @bind-Value="_userDetailModel.UserMiddleName" class="form-control" placeholder="Entre Middle Name" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <InputText @bind-Value="_userDetailModel.UserLastName" class="form-control" placeholder="Entre Sobrenome" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CPF</label>
+        <InputText @bind-Value="_userDetailModel.Cpf" class="form-control" placeholder="Entre CPF" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">RG</label>
+        <InputText @bind-Value="_userDetailModel.Rg" class="form-control" placeholder="Entre RG" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <InputText @bind-Value="_userDetailModel.PhoneNumber" class="form-control" placeholder="Numero Celular" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Date of Birth</label>
+        <InputDate @bind-Value="_userDetailModel.DateOfBirth" class="form-control" placeholder="Data de Nascimento" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Update Details</button>
+</EditForm>
+
+<hr />
+
+
