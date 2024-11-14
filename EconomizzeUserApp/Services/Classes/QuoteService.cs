@@ -12,23 +12,23 @@ namespace StoreApp.Services.Repositories
         #region SET LIST VALUES
         public void SetListValues()
         {
-            Entities.AddRange(new List<Quote>
-            {
-                new Quote
-                {
-                    QuoteId = 1,
-                    UserId = 1,
-                    NeighborhoodId = 101,
-                    IsExpired = false,
-                    IsFullfiled = true,
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    ExpiresOn = DateTime.MaxValue,
-                    ModifiedBy = 1,
-                    ModifiedOn = DateTime.Now
-                }
-            });
-            CurrentEntity = Entities[^1];
+            //Entities.AddRange(new List<Quote>
+            //{
+            //    new Quote
+            //    {
+            //        QuoteId = 1,
+            //        UserId = 1,
+            //        NeighborhoodId = 101,
+            //        IsExpired = false,
+            //        IsFullfiled = true,
+            //        CreatedBy = 1,
+            //        CreatedOn = DateTime.Now,
+            //        ExpiresOn = DateTime.MaxValue,
+            //        ModifiedBy = 1,
+            //        ModifiedOn = DateTime.Now
+            //    }
+            //});
+            //CurrentEntity = Entities[^1];
         }
         #endregion
 

@@ -13,30 +13,30 @@ namespace StoreApp.Services.Repositories
         #region SET LIST VALUES
         public void SetListValues()
         {
-            Entities.AddRange(new List<Prescription>
-            {
-                new Prescription {
-                    PrescriptionId = 1,
-                    QuoteId = 1,
-                    PrescriptionUnique = Guid.NewGuid(),
-                    FacilityId = 0,
-                    ProfessionalId = 0,
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    ModifiedBy = 1,
-                    ModifiedOn = DateTime.Now
-                }
-            });
+            //Entities.AddRange(new List<Prescription>
+            //{
+            //    new Prescription {
+            //        PrescriptionId = 1,
+            //        QuoteId = 1,
+            //        PrescriptionUnique = Guid.NewGuid(),
+            //        FacilityId = 0,
+            //        ProfessionalId = 0,
+            //        CreatedBy = 1,
+            //        CreatedOn = DateTime.Now,
+            //        ModifiedBy = 1,
+            //        ModifiedOn = DateTime.Now
+            //    }
+            //});
 
-            PrescriptionImages.AddRange(new List<PrescriptionImage>
-            {
-                new PrescriptionImage
-                {
-                    PrescriptionId = 1,
-                    ImageUrl = "C:/Development/EconomizzeUserApp/EconomizzeUserApp/Storage/test.jpg"
-                }
-            });
-            CurrentEntity = Entities[^1];
+            //PrescriptionImages.AddRange(new List<PrescriptionImage>
+            //{
+            //    new PrescriptionImage
+            //    {
+            //        PrescriptionId = 1,
+            //        ImageUrl = "C:/Development/EconomizzeUserApp/EconomizzeUserApp/Storage/test.jpg"
+            //    }
+            //});
+            //CurrentEntity = Entities[^1];
         }
         #endregion
 

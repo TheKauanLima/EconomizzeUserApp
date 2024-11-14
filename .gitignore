@@ -201,6 +201,9 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
+# Ignore Google Cloud service account key file
+EconomizzeUserApp/Resources/economizzeuserapp-441700-628b4df09d34.json
+
 # LightSwitch generated files
 GeneratedArtifacts/
 _Pvt_Extensions/

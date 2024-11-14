@@ -26,12 +26,11 @@ else
                     <td>
                         @foreach (var prescriptionImage in prescriptionImages.Where(img => img.PrescriptionId == prescription.PrescriptionId))
                         {
-                            <img src="@GetLocalImagePath(prescriptionImage.ImageUrl)"
+                            <img src="@GetCloudImagePath(prescriptionImage.ImageUrl)"
                                  alt="Prescription Image"
                                  style="max-width: 150px; max-height: 150px; cursor: pointer;"
                                  onerror="this.style.display='none'; console.error('Failed to load image:', this.src);"
-                                 @onclick="(async () => await ShowImageModal(prescriptionImage.ImageUrl))" />
-                            <p>@prescriptionImage.ImageUrl</p>
+                                 @onclick="(async () => await ShowImageModalAsync(prescriptionImage.ImageUrl))" />
                         }
                     </td>
                 </tr>
@@ -40,6 +39,6 @@ else
     </table>
 }
 
-<button class="btn btn-secondary mt-3" @onclick="BackToQuotes">Back to Quotes</button>
+<button class="btn btn-secondary mt-3" @onclick="NavigateBackToQuotes">Back to Quotes</button>
 
 
