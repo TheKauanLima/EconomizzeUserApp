@@ -1,4 +1,4 @@
-﻿namespace EconomizzeUserApp.Services.Classes
+﻿namespace EconomizzeUserApp.Services.Classes.Handler
 {
     public class UsernameHandler
     {

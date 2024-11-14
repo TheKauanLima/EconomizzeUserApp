@@ -5,6 +5,7 @@ using EconomizzeUserApp.Services.Interfaces;
 using StoreApp.Services.Repositories;
 using Blazored.Modal;
 using System.Reflection;
+using EconomizzeUserApp.Services.Classes.Handler;
 
 namespace EconomizzeUserApp
 {
@@ -40,13 +41,13 @@ namespace EconomizzeUserApp
             builder.Services.AddSingleton<UsernameHandler>();
 
             builder.Services.AddSingleton<SettingsService>();
-            builder.Services.AddScoped<IUserLoginService, UserLoginService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IStreetDetailViewService, StreetDetailViewService>();
-            builder.Services.AddScoped<IStreetService, StreetService>();
-            builder.Services.AddScoped<IUserAddressService, UserAddressService>();
-            builder.Services.AddScoped<IQuoteService, QuoteService>();
-            builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
+            builder.Services.AddSingleton<IUserLoginService, UserLoginService>();
+            builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton<IStreetDetailViewService, StreetDetailViewService>();
+            builder.Services.AddSingleton<IStreetService, StreetService>();
+            builder.Services.AddSingleton<IUserAddressService, UserAddressService>();
+            builder.Services.AddSingleton<IQuoteService, QuoteService>();
+            builder.Services.AddSingleton<IPrescriptionService, PrescriptionService>();
 
 
 #if DEBUG

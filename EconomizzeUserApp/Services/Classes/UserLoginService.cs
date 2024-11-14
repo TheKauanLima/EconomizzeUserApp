@@ -1,4 +1,6 @@
 ﻿using Economizze.Library;
+using EconomizzeUserApp.Services.Classes.Generic;
+using EconomizzeUserApp.Services.Classes.Handler;
 using EconomizzeUserApp.Services.Interfaces;
 
 namespace EconomizzeUserApp.Services.Classes

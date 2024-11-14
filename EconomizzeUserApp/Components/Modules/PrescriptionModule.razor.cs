@@ -8,15 +8,22 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace EconomizzeUserApp.Components.Modules
 {
+    /// <summary>
+    /// Component to manage prescriptions, including adding, saving, deleting, and uploading prescription files.
+    /// </summary>
     public partial class PrescriptionModule
     {
-        //prescriptions
+        // List of prescriptions
         private List<PrescriptionModel> prescriptions = new();
+
+        // List of prescription images
         private List<PrescriptionImageModel> prescriptionImages = new();
 
-        //prescription images
+        // Models for new prescriptions and images
         private PrescriptionModel newPrescription = InitializeNewPrescription();
         private PrescriptionImageModel newPrescriptionImage = new();
+
+        // File handling
         private IBrowserFile? selectedFile;
         private string uploadedFileName = string.Empty;
         private bool isFileSelected = false;
@@ -25,21 +32,29 @@ namespace EconomizzeUserApp.Components.Modules
         private bool isSubmitting = false;
         private bool isSubmitted = false;
 
+        // User ID for the current session
         private static int UserId;
 
+        // Modal service to handle displaying modals
         [CascadingParameter] IModalService? Modal { get; set; }
 
         #region LIFECYCLE METHODS
-        // set necessary values
+
+        /// <summary>
+        /// Initializes the component by setting the current user ID.
+        /// </summary>
         protected override void OnInitialized()
         {
             UserId = UserLoginService.CurrentEntity!.UserId;
-            /* PrescriptionService.SetListValues(); */
         }
         #endregion
 
         #region PRESCRIPTION HANDLERS
-        // set prescription default values
+
+        /// <summary>
+        /// Initializes a new PrescriptionModel with default values.
+        /// </summary>
+        /// <returns>A new PrescriptionModel instance.</returns>
         private static PrescriptionModel InitializeNewPrescription() => new()
         {
             PrescriptionUnique = Guid.NewGuid(),
@@ -49,7 +64,10 @@ namespace EconomizzeUserApp.Components.Modules
             ModifiedOn = DateTime.Now
         };
 
-        // clone prescriptionImage to an object (to avoid referencing it itself)
+        /// <summary>
+        /// Creates a clone of the current PrescriptionImageModel to avoid reference issues.
+        /// </summary>
+        /// <returns>A new PrescriptionImageModel instance.</returns>
         private PrescriptionImageModel ClonePrescriptionImage() => new()
         {
             PrescriptionUnique = newPrescription.PrescriptionUnique,
@@ -58,10 +76,12 @@ namespace EconomizzeUserApp.Components.Modules
             Base64Image = newPrescriptionImage.Base64Image
         };
 
-        // add prescription and image data to the list
+        /// <summary>
+        /// Saves the current prescription and its associated image to the list.
+        /// </summary>
         private void SavePrescription()
         {
-            if (selectedFile == null) return; // ensure file is selected
+            if (selectedFile == null) return; // Ensure a file is selected
 
             var clonedImage = ClonePrescriptionImage();
             prescriptions.Add(newPrescription);
@@ -70,7 +90,9 @@ namespace EconomizzeUserApp.Components.Modules
             ResetForm();
         }
 
-        // reset models and variables to default values
+        /// <summary>
+        /// Resets the form and clears all input fields.
+        /// </summary>
         private void ResetForm()
         {
             newPrescription = InitializeNewPrescription();
@@ -79,16 +101,19 @@ namespace EconomizzeUserApp.Components.Modules
             isFileSelected = false;
         }
 
-        // submit all files to cloud
+        /// <summary>
+        /// Submits all the prescriptions and their associated images to the cloud.
+        /// </summary>
         private async Task SubmitFiles()
         {
-            if (isSubmitting || isSubmitted) return; // prevent multiple submissions
+            if (isSubmitting || isSubmitted) return;
 
             isSubmitting = true;
 
             try
             {
-                foreach (var prescription in prescriptions.ToList()) // add each prescription
+                // Submit each prescription and its images
+                foreach (var prescription in prescriptions.ToList())
                 {
                     await AddPrescription(prescription);
                     UpdateImagePrescriptionId(prescription);
@@ -107,7 +132,9 @@ namespace EconomizzeUserApp.Components.Modules
             }
         }
 
-        // set prescription id to image prescription
+        /// <summary>
+        /// Updates the PrescriptionId for each associated image.
+        /// </summary>
         private void UpdateImagePrescriptionId(PrescriptionModel prescription)
         {
             foreach (var image in prescriptionImages.Where(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
@@ -116,14 +143,16 @@ namespace EconomizzeUserApp.Components.Modules
             }
         }
 
-        // add prescription to service
+        /// <summary>
+        /// Adds a new prescription to the service.
+        /// </summary>
         private async Task AddPrescription(PrescriptionModel prescription)
         {
             prescription.QuoteId = QuoteService.CurrentEntity!.QuoteId;
 
             var result = await PrescriptionService.CreateAsync(
-                    Mapper.Map<Prescription>(prescription)
-                );
+                Mapper.Map<Prescription>(prescription)
+            );
             var updatedPrescription = Mapper.Map<PrescriptionModel>(result);
 
             var index = prescriptions.FindIndex(p => p.PrescriptionUnique == updatedPrescription.PrescriptionUnique);
@@ -133,13 +162,14 @@ namespace EconomizzeUserApp.Components.Modules
             }
         }
 
-        // save prescription image to cloud
+        /// <summary>
+        /// Saves prescription images to cloud storage.
+        /// </summary>
         private async Task SavePrescriptionImages(PrescriptionModel prescription)
         {
             var imagesCopy = prescriptionImages.Where(img => img.PrescriptionId == prescription.PrescriptionId).ToList();
             foreach (var image in imagesCopy)
             {
-                // give image correct url and upload
                 var objectName = $"{prescription.PrescriptionUnique}{image.FileExtension}";
                 var publicUrl = await StorageService.UploadFileAsync(image.ImageData!, objectName);
                 image.ImageUrl = publicUrl;
@@ -151,24 +181,22 @@ namespace EconomizzeUserApp.Components.Modules
         #endregion
 
         #region IMAGE HANDLING
-        // handle file properties when chosen
+
+        /// <summary>
+        /// Handles the selection of a file from the input and processes it.
+        /// </summary>
         private async Task HandleFileSelected(InputFileChangeEventArgs e)
         {
             try
             {
-                selectedFile = e.File; // hold file data
+                selectedFile = e.File;
                 uploadedFileName = selectedFile.Name;
                 newPrescriptionImage.FileExtension = Path.GetExtension(uploadedFileName);
 
-                // offload file processing to a background task
                 await Task.Run(async () =>
                 {
-                    
-                    newPrescriptionImage.ImageData = // write image into bytes to upload
-                        await ConvertToByteArrayAsync(selectedFile);
-
-                    newPrescriptionImage.Base64Image = // write bytes to string to display
-                        Convert.ToBase64String(newPrescriptionImage.ImageData);
+                    newPrescriptionImage.ImageData = await ConvertToByteArrayAsync(selectedFile);
+                    newPrescriptionImage.Base64Image = Convert.ToBase64String(newPrescriptionImage.ImageData);
                 });
 
                 isFileSelected = true;
@@ -182,7 +210,9 @@ namespace EconomizzeUserApp.Components.Modules
             }
         }
 
-        // convert image to an array of bytes
+        /// <summary>
+        /// Converts an IBrowserFile to a byte array.
+        /// </summary>
         private static async Task<byte[]> ConvertToByteArrayAsync(IBrowserFile browserFile)
         {
             const long maxFileSize = 10 * 1024 * 1024; // 10 MB
@@ -194,15 +224,20 @@ namespace EconomizzeUserApp.Components.Modules
         #endregion
 
         #region MODAL & NAVIGATION
-        // pop up modal window with bigger image
+
+        /// <summary>
+        /// Displays a modal window with a larger view of the selected image.
+        /// </summary>
         private async Task ShowImageModal(string image)
         {
-            var parameters = new ModalParameters { { "imagem", image } };
+            var parameters = new ModalParameters { { "imageString", image } };
             var imageModal = Modal!.Show<ImageModal>("Prescricao seletada", parameters);
             await imageModal.Result;
         }
 
-        // finish the quote and navigate back to the quote page
+        /// <summary>
+        /// Completes the quote and navigates back to the quote page.
+        /// </summary>
         private void FinishQuote()
         {
             if (isSubmitted)
@@ -211,7 +246,9 @@ namespace EconomizzeUserApp.Components.Modules
             }
         }
 
-        // delete element in prescriptions lists
+        /// <summary>
+        /// Deletes a prescription from the list.
+        /// </summary>
         private void DeletePrescription(Guid prescriptionUnique)
         {
             prescriptions.RemoveAll(p => p.PrescriptionUnique == prescriptionUnique);

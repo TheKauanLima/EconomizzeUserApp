@@ -1,6 +1,6 @@
-﻿using EconomizzeUserApp.Services.Classes;
+﻿using EconomizzeUserApp.Services.Classes.Handler;
 
-namespace EconomizzeUserApp.Services.Interfaces
+namespace EconomizzeUserApp.Services.Interfaces.Generic
 {
     public interface IService<TEntity>
     {

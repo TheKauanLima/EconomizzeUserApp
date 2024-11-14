@@ -68,10 +68,6 @@
 		<ProjectReference Include="..\..\EconomizzeAPI\Economizze.Library\Economizze.Library.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Storage\" />
-    </ItemGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\economizzeuserapp-441700-628b4df09d34.json" />
 		<None Update="Resources\economizzeuserapp-441700-628b4df09d34.json">

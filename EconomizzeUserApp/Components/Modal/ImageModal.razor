@@ -1,16 +1,22 @@
 ﻿@page "/imagemodal"
-@namespace EconomizzeUserApp.Components.Modal
 
 <div class="container text-center" style="width: auto">
     <div class="row">
         <div class="col">
-            <img src="data:image/jpeg;base64,@image"
-                 style="max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: pointer;" />
+            @if (imageString is not null)
+            {
+                <img src="data:image/jpeg;base64,@imageString"
+                style="max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: pointer;" />
+            }
+            @if (imageUrl is not null)
+            {
+                <img src="@CloudStorageHandler.GetCloudImagePath(imageUrl)"
+                     alt="Prescription Image"
+                     style="max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: pointer;"
+                     onerror="this.style.display='none'; console.error('Failed to load image:', this.src);" />
+            }
         </div>
     </div>
 </div>
 
-@code {
-    [CascadingParameter] BlazoredModalInstance? ModalInstance { get; set; }
-    [Parameter] public string? image { get; set; }
-}
+

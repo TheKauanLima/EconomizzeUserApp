@@ -1,93 +1,112 @@
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using Economizze.Library;
+using EconomizzeUserApp.Components.Modal;
 using EconomizzeUserApp.Model;
 using Microsoft.AspNetCore.Components;
 
 namespace EconomizzeUserApp.Components.Modules
 {
+    /// <summary>
+    /// Component to manage and display a list of prescriptions related to a specific quote.
+    /// Provides functionalities for fetching, viewing, and interacting with prescription data.
+    /// </summary>
     public partial class PrescriptionListModule
     {
-        #region Parameters
+        /// <summary>
+        /// The ID of the quote for which prescriptions are to be displayed.
+        /// This value is passed as a parameter from the parent component.
+        /// </summary>
         [Parameter] public int QuoteId { get; set; }
-        #endregion
 
-        #region Fields
+        /// <summary>
+        /// List of all prescriptions associated with the specified QuoteId.
+        /// </summary>
         private List<PrescriptionModel> prescriptions = new();
-        private List<PrescriptionImage> prescriptionImages = new();
-        #endregion
 
-        #region Lifecycle Methods
+        /// <summary>
+        /// List of all images associated with the prescriptions.
+        /// </summary>
+        private List<PrescriptionImage> prescriptionImages = new();
+
+        /// <summary>
+        /// Modal service used to display modals (e.g., for showing prescription images).
+        /// </summary>
+        [CascadingParameter] IModalService? Modal { get; set; }
+
+        #region LIFECYCLE METHODS
+
+        /// <summary>
+        /// Lifecycle method called when the component is initialized.
+        /// Loads prescription data related to the provided QuoteId.
+        /// </summary>
         protected override async Task OnInitializedAsync()
         {
             await InitializePrescriptionData();
         }
         #endregion
 
-        #region Initialization Methods
+        #region INITIALIZATION METHODS
+
+        /// <summary>
+        /// Initializes prescription data by setting up necessary values and loading prescriptions.
+        /// </summary>
         private async Task InitializePrescriptionData()
         {
+            // Ensure that the PrescriptionService is properly initialized
             if (PrescriptionService.CurrentEntity == null)
             {
                 PrescriptionService.SetListValues();
             }
 
+            // Load all prescriptions for the given QuoteId
             await LoadPrescriptionsForQuoteAsync();
         }
 
+        /// <summary>
+        /// Loads all prescriptions tied to the specified QuoteId.
+        /// Fetches the data from the service and maps it to the model.
+        /// </summary>
         private async Task LoadPrescriptionsForQuoteAsync()
         {
             try
             {
-                // Fetch prescriptions and map them to the model
+                // Fetch prescriptions from the service and map them to the PrescriptionModel
                 var prescriptionEntities = await PrescriptionService.GetByQuoteIdAsync(QuoteId);
                 prescriptions = Mapper.Map<List<PrescriptionModel>>(prescriptionEntities);
 
-                // Fetch all images associated with the prescriptions
+                // Fetch all images associated with the loaded prescriptions
                 prescriptionImages = await PrescriptionService.GetAllPrescriptionImagesAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading prescriptions: {ex.Message}");
+                Console.WriteLine($"Error loading prescriptions: {ex}");
             }
         }
         #endregion
 
-        #region Helper Methods
-        private string GetCloudImagePath(string? imageUrl)
-        {
-            if (string.IsNullOrWhiteSpace(imageUrl))
-            {
-                Console.WriteLine("Invalid Image URL provided.");
-                return string.Empty;
-            }
+        #region MODAL METHODS
 
-            return imageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                ? imageUrl
-                : $"https://storage.googleapis.com/your-bucket-name/{imageUrl}";
+        /// <summary>
+        /// Displays a modal window with a larger view of the selected prescription image.
+        /// </summary>
+        /// <param name="imageUrl">The URL of the image to display in the modal.</param>
+        private async Task ShowImageModal(string imageUrl)
+        {
+            // Set up modal parameters to pass the image URL
+            var parameters = new ModalParameters { { "imageUrl", imageUrl } };
+
+            // Show the modal using Blazored Modal service
+            var imageModal = Modal!.Show<ImageModal>("Prescrição selecionada", parameters);
+            await imageModal.Result;
         }
         #endregion
 
-        #region Modal Methods
-        private async Task ShowImageModalAsync(string? imageUrl)
-        {
-            if (string.IsNullOrWhiteSpace(imageUrl))
-            {
-                Console.WriteLine("Cannot display modal for an empty image URL.");
-                return;
-            }
+        #region NAVIGATION METHODS
 
-            var cloudImageUrl = GetCloudImagePath(imageUrl);
-            await DisplayModal(cloudImageUrl);
-        }
-
-        private Task DisplayModal(string imageUrl)
-        {
-            // Placeholder for actual modal implementation
-            Console.WriteLine($"Displaying modal for image: {imageUrl}");
-            return Task.CompletedTask;
-        }
-        #endregion
-
-        #region Navigation Methods
+        /// <summary>
+        /// Navigates back to the main quotes page.
+        /// </summary>
         private void NavigateBackToQuotes()
         {
             Navigation.NavigateTo("/orcamento");

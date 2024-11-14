@@ -1,14 +1,17 @@
-﻿using EconomizzeUserApp.Services.Classes;
+﻿using EconomizzeUserApp.Services.Classes.Handler;
 
-public class BaseService<TEntity> where TEntity : class
+namespace EconomizzeUserApp.Services.Classes.Generic
 {
-    public StatusHandler _statusHandler { get; set; }
-    public TEntity? CurrentEntity { get; set; }
-    public List<TEntity> Entities { get; set; }
-
-    public BaseService(StatusHandler statusHandler)
+    public class BaseService<TEntity> where TEntity : class
     {
-        _statusHandler = statusHandler;
-        Entities = new();
+        public StatusHandler _statusHandler { get; set; }
+        public TEntity? CurrentEntity { get; set; }
+        public List<TEntity> Entities { get; set; }
+
+        public BaseService(StatusHandler statusHandler)
+        {
+            _statusHandler = statusHandler;
+            Entities = new();
+        }
     }
 }
