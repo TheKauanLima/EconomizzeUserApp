@@ -58,6 +58,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\userpfp.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AutoMapper" Version="13.0.1" />
         <PackageReference Include="Blazored.Modal" Version="7.3.1" />
         <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
@@ -74,6 +78,10 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\Images\" />
 	</ItemGroup>
 
 

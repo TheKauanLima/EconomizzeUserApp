@@ -8,6 +8,7 @@ namespace StoreApp.Services.Repositories
     public class PrescriptionService : BaseService<Prescription>, IPrescriptionService
     {
         public List<PrescriptionImage> PrescriptionImages { get; set; } = new List<PrescriptionImage>();
+        public List<PrescriptionText> PrescriptionTexts { get; set; } = new List<PrescriptionText>();
         public PrescriptionService(StatusHandler statusHandler)
             : base(statusHandler) { }
 
@@ -120,9 +121,12 @@ namespace StoreApp.Services.Repositories
 
         public async Task<List<PrescriptionImage>> GetAllPrescriptionImagesAsync()
         {
-            // Assuming PrescriptionImages is your in-memory list
             return await Task.FromResult(PrescriptionImages);
         }
 
+        public async Task<List<PrescriptionText>> GetAllPrescriptionTextsAsync()
+        {
+            return await Task.FromResult(PrescriptionTexts);
+        }
     }
 }

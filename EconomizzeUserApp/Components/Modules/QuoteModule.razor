@@ -6,36 +6,35 @@
 @inject NavigationManager NavigationManager
 
 <div class="container-fluid">
-    <div class="row">
+    <div class="row gx-5">
         <!-- Left Section: Create New Quote -->
-        <div class="col-md-5 border-end p-4 bg-light">
-            <h3 class="text-primary">Orçamentos</h3>
+        <div class="col-md-6 p-4 bg-light border rounded">
+            <h3 class="text-primary mb-4">Orçamentos</h3>
 
-            <button class="btn btn-primary mb-4" @onclick="ToggleDrawer">Criar Novo Orçamento</button>
+            <button class="btn btn-primary mb-3 w-100" @onclick="ToggleDrawer">Criar Novo Orçamento</button>
 
             @if (isDrawerOpen)
             {
-                <div class="drawer bg-light p-4 border">
-                    <button class="btn btn-secondary mb-3" @onclick="ToggleDrawer">Fechar</button>
+                <div class="drawer bg-white p-3 rounded shadow-sm">
+                    <button class="btn btn-secondary mb-3 w-100" @onclick="ToggleDrawer">Fechar</button>
 
                     <!-- Address Selection -->
-                    <h5>Escolha o Endereço:</h5>
+                    <h5 class="text-secondary">Escolha o Endereço:</h5>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="useCurrentAddress"
-                               @bind="useCurrentAddress" />
+                        <input class="form-check-input" type="checkbox" id="useCurrentAddress" @bind="useCurrentAddress" />
                         <label class="form-check-label" for="useCurrentAddress">Usar endereço atual</label>
                     </div>
 
                     @if (!useCurrentAddress)
                     {
-                        <button class="btn btn-info mb-3" @onclick="ToggleSearchZipCodeModule">Adicionar Novo Endereço</button>
+                        <button class="btn btn-info mb-3 w-100" @onclick="ToggleSearchZipCodeModule">Adicionar Novo Endereço</button>
                         @if (isSearchZipCodeVisible)
                         {
-                            <SearchZipCodeModule />
+                            <SearchZipCodeModule ShowActions="false" />
                         }
                     }
 
-                    <button class="btn btn-success mt-3" @onclick="CreateQuote" disabled="@(!CanCreateQuote)">
+                    <button class="btn btn-success mt-3 w-100" @onclick="CreateQuote" disabled="@(!CanCreateQuote)">
                         Criar Orçamento
                     </button>
                 </div>
@@ -43,13 +42,13 @@
         </div>
 
         <!-- Right Section: List of Quotes -->
-        <div class="col-md-7 p-4">
-            <h3 class="text-primary">Lista de Orçamentos</h3>
+        <div class="col-md-6 p-4">
+            <h3 class="text-primary mb-4">Lista de Orçamentos</h3>
 
             @if (_quotes.Any())
             {
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-bordered">
+                    <thead class="table-light">
                         <tr>
                             <th>Orçamento</th>
                             <th>Status</th>
@@ -63,7 +62,7 @@
                                 <td>Quote @(quote.index + 1)</td>
                                 <td>@(quote.value.IsExpired ? "Expirado" : "Ativo")</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" @onclick="() => ViewQuote(quote.value.QuoteId)">View Quote</button>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => ViewQuote(quote.value.QuoteId)">View</button>
                                     <button class="btn btn-danger btn-sm" @onclick="() => DeleteQuote(quote.value.QuoteId)">Excluir</button>
                                 </td>
                             </tr>
@@ -73,10 +72,8 @@
             }
             else
             {
-                <div class="alert alert-info">Não existem orçamentos aqui.</div>
+                <div class="alert alert-info text-center">Não existem orçamentos aqui.</div>
             }
         </div>
     </div>
 </div>
-
-

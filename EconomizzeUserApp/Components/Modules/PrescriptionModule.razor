@@ -9,68 +9,96 @@
 
 <h3>Prescription Management</h3>
 
-<!-- Form to add a new prescription -->
-<EditForm Model="@newPrescription" OnValidSubmit="SavePrescription">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="row">
+    <!-- Left panel for entering prescription text -->
+    <div class="col-md-6">
+        <h5>Enter Prescription Details</h5>
+        <EditForm Model="@newPrescriptionText" OnValidSubmit="SavePrescriptionText">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-    <!-- File Upload for Prescription -->
-    <div>
-        <label for="prescriptionFile">Prescription File</label>
-        <InputFile OnChange="HandleFileSelected" class="form-control" style="width: auto;" accept=".png,.jpg,.jpeg" />
+            <div>
+                <label for="prescriptionText">Prescription Text</label>
+                <textarea id="prescriptionText" class="form-control" @bind="newPrescriptionText.Text"></textarea>
+            </div>
+
+            <button class="btn btn-primary mt-2">Save Text</button>
+        </EditForm>
     </div>
-    @if (!string.IsNullOrEmpty(uploadedFileName))
-    {
-        <p>Uploaded File: @uploadedFileName</p>
-    }
-    <button class="btn btn-primary" disabled="@(!isFileSelected)">Submit Prescription</button>
-</EditForm>
+
+    <!-- Right panel for uploading prescription file -->
+    <div class="col-md-6">
+        <h5>Upload Prescription File</h5>
+        <EditForm Model="@newPrescription" OnValidSubmit="SavePrescription">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+                <label for="prescriptionFile">Upload File</label>
+                <InputFile OnChange="HandleFileSelected" class="form-control" accept=".png,.jpg,.jpeg" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(uploadedFileName))
+            {
+                    <p>Uploaded File: @uploadedFileName</p>
+            }
+            <button class="btn btn-primary mt-2" disabled="@(!isFileSelected)">Submit Prescription</button>
+        </EditForm>
+    </div>
+</div>
 
 <hr />
 
-<!-- Display Prescriptions List -->
+<!-- Bottom table displaying prescription list -->
 <h4>Prescriptions List</h4>
 @if (prescriptions.Count == 0)
 {
-    <p>No prescriptions added yet.</p>
+        <p>No prescriptions added yet.</p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Created On</th>
-                <th>Prescription Images</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Created On</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
             @foreach (var prescription in prescriptions)
             {
-                <tr>
-                    <td>@prescription.CreatedOn.ToShortDateString()</td>
-                    <td>
-                        @foreach (var image in prescriptionImages.Where(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
+                        <tr>
+                            <td>@prescription.CreatedOn.ToShortDateString()</td>
+                            <td>
+                        @if (prescriptionImages.Any(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
                         {
-                            <img src="data:image/jpeg;base64,@image.Base64Image"
-                                 style="max-width: 150px; max-height: 150px; cursor: pointer;"
-                                 @onclick="(async () => await ShowImageModal(image.Base64Image))" />
+                            @foreach (var image in prescriptionImages.Where(img => img.PrescriptionUnique == prescription.PrescriptionUnique))
+                            {
+                                                <img src="data:image/jpeg;base64,@image.Base64Image"
+                                                     style="max-width: 150px; max-height: 150px; cursor: pointer;"
+                                                     @onclick="(async () => await ShowImageModal(image.Base64Image))" />
+                            }
                         }
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" @onclick="() => DeletePrescription(prescription.PrescriptionUnique)">Delete</button>
-                    </td>
-                </tr>
+                        @if (prescriptionTexts.Any(txt => txt.PrescriptionUnique == prescription.PrescriptionUnique))
+                        {
+                            @foreach (var text in prescriptionTexts.Where(txt => txt.PrescriptionUnique == prescription.PrescriptionUnique))
+                            {
+                                <span>@text.Text</span>
+                            }
+                            // @prescriptionTexts.FirstOrDefault(txt => txt.PrescriptionUnique == prescription.PrescriptionUnique)?.Text
+                        }
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" @onclick="() => DeletePrescription(prescription.PrescriptionUnique)">Delete</button>
+                            </td>
+                        </tr>
             }
-        </tbody>
-    </table>
-
-    <!-- Finish Quote Button -->
-    <div style="position: fixed; bottom: 10px; right: 10px;">
-        <button class="btn btn-primary" @onclick="FinishQuote" disabled="@(isSubmitting || !isSubmitted)">Finish Quote</button>
-    </div>
+            </tbody>
+        </table>
 }
 
-<button class="btn btn-success" @onclick="SubmitFiles" disabled="@(!prescriptions.Any() || isSubmitting)">Submit Files</button>
-
-
+<div class="d-flex justify-content-between mt-4">
+    <button class="btn btn-success" @onclick="SubmitPrescription" disabled="@(!prescriptions.Any() || isSubmitting)">Submit Files</button>
+    <button class="btn btn-primary" @onclick="FinishQuote" disabled="@(isSubmitting || !isSubmitted)">Finish Quote</button>
+</div>

@@ -71,8 +71,11 @@
             <p><strong>Longitude:</strong> @_currentUserAddress.Longitude</p>
             <p><strong>Latitude:</strong> @_currentUserAddress.Latitude</p>
 
-            <button class="btn btn-warning me-2" @onclick="EditCurrentAddress">Atualizar</button>
-            <button class="btn btn-danger" @onclick="DeleteCurrentAddress">Excluir</button>
+            @if (ShowActions)
+            {
+                <button class="btn btn-warning me-2" @onclick="EditCurrentAddress">Atualizar</button>
+                <button class="btn btn-danger" @onclick="DeleteCurrentAddress">Excluir</button>
+            }
         </div>
     }
 </div>

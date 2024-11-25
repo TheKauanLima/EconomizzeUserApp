@@ -1,7 +1,7 @@
 ﻿@inject IUserLoginService UserLoginService
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">StoreApp</a>
+        <a class="navbar-brand" href="">User App</a>
     </div>
 </div>
 
@@ -34,18 +34,6 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="usuario">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuario
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="usuario-endereco">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuario Endereco
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="trocar-senha">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Trocar Senha
             </NavLink>
@@ -56,48 +44,8 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Orcamentos
             </NavLink>
         </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="prescricao">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Prescricoes
-            </NavLink>
-        </div>
     </nav>
 </div>
-
-@* @inject IUserLoginServices UserLoginServices
-@inject NavService NavService
-@inject NavigationManager Navigation
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">EconomizzeHybrid</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column"> *@
-@*         @foreach (var item in NavService.NavItems.Where(i => i.IsVisible))
-        {
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="@item.Url">
-                    <span class="@item.Icon-nav-menu" aria-hidden="true"></span> @item.Text
-                </NavLink>
-            </div>
-        }
-    </nav>
-</div> *@
 
 @code {
-    // protected override void OnInitialized()
-    // {
-    //     NavService.OnChange += StateHasChanged;
-    // }
-
-    // private void LogOut()
-    // {
-    //     //UserLoginServices.LogOut();
-    //     NavService.OnChange -= StateHasChanged;
-    // }
 }

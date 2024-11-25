@@ -10,7 +10,7 @@
             }
             @if (imageUrl is not null)
             {
-                <img src="@CloudStorageHandler.GetCloudImagePath(imageUrl)"
+                <img src="data:image/jpeg;base64,@CloudStorageHandler.Base64String"
                      alt="Prescription Image"
                      style="max-width: 100%; max-height: 100%; width: auto; height: auto; cursor: pointer;"
                      onerror="this.style.display='none'; console.error('Failed to load image:', this.src);" />

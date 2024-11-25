@@ -1,5 +1,6 @@
 using Economizze.Library;
 using EconomizzeUserApp.Model;
+using Microsoft.AspNetCore.Components;
 
 namespace EconomizzeUserApp.Components.Modules
 {
@@ -13,6 +14,12 @@ namespace EconomizzeUserApp.Components.Modules
         /// Model used to capture user details in the form.
         /// </summary>
         private UserDetailModel _userDetailModel = new();
+
+        /// <summary>
+        /// Event callback to notify parent components when user details are updated.
+        /// </summary>
+        [Parameter]
+        public EventCallback OnUserDetailsUpdated { get; set; }
 
         #region LIFECYCLE METHODS
 
@@ -37,35 +44,30 @@ namespace EconomizzeUserApp.Components.Modules
         {
             try
             {
-                // Ensure that the UserDetailModel is not null before proceeding
-                if (_userDetailModel == null)
-                {
-                    Console.WriteLine("UserDetailModel is null.");
-                    return;
-                }
+                if (_userDetailModel == null) return;
 
-                // Map the UserDetailModel to a User entity
                 var userEntity = Mapper.Map<User>(_userDetailModel);
 
                 if (UserService.CurrentEntity is null)
                 {
-                    // Create a new user if none exists
                     await UserService.CreateAsync(userEntity);
                 }
                 else
                 {
-                    // Update the existing user
                     await UserService.UpdateAsync(userEntity);
                 }
 
-                // Provide feedback upon successful save
+                // Notify parent about the update
+                await OnUserDetailsUpdated.InvokeAsync();
+
                 Console.WriteLine("User details saved successfully.");
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging purposes
                 Console.WriteLine($"Error saving user details: {ex.Message}");
             }
+
+            StateHasChanged();
         }
         #endregion
     }

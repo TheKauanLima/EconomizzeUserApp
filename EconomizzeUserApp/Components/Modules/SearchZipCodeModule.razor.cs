@@ -1,5 +1,6 @@
 using Economizze.Library;
 using EconomizzeUserApp.Model;
+using Microsoft.AspNetCore.Components;
 
 namespace EconomizzeUserApp.Components.Modules
 {
@@ -9,6 +10,9 @@ namespace EconomizzeUserApp.Components.Modules
     /// </summary>
     public partial class SearchZipCodeModule
     {
+        [Parameter]
+        public bool ShowActions { get; set; } = true;
+
         /// <summary>
         /// Holds the details of the street retrieved based on the ZIP code.
         /// </summary>

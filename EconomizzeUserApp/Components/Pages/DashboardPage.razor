@@ -1,53 +1,100 @@
 ﻿@page "/dashboard"
+@inject IUserService UserService
 
-<h3 class="text-primary mb-4">Dashboard</h3>
+<div class="profile-container">
+    <div class="profile-wrapper">
+        <img src="Images/userpfp.jpg" alt="Profile Picture" class="profile-image" />
+    </div>
+    <div class="profile-message">
+        <p>Hello,</p>
+        @if (UserService.CurrentEntity is not null)
+        {
+            <h2>@UserService.CurrentEntity.UserFirstName</h2>
+        }
+        else
+        {
+            <h2>USER</h2>
+        }
+    </div>
+</div>
 
-<!-- Tab Navigation -->
+<style>
+    .profile-container {
+        display: flex; /* Enables flexbox layout */
+        align-items: center; /* Vertically aligns items */
+        gap: 20px; /* Adds spacing between the image and the text */
+        margin-bottom: 20px; /* Adds space below the container */
+    }
+
+    .profile-wrapper {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        border: 5px solid #4517DB;
+        box-shadow: inset 0 0 12px #4A3FCD;
+        overflow: hidden;
+        background-clip: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-image {
+        width: 152%;
+        height: 152%;
+        border-radius: 50%;
+        object-fit: cover;
+        transform: scale(1.01);
+    }
+
+    .profile-message {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px; /* Adjust spacing between text elements */
+    }
+
+    .profile-message p {
+        margin: 0;
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    .profile-message h2 {
+        margin: 0;
+        font-size: 2rem;
+        line-height: 1;
+    }
+</style>
+
 <ul class="nav nav-tabs mb-4">
-    @* <li class="nav-item">
-    <button class="nav-link @(activeTab == "Info" ? "active" : "")" @onclick='() => SelectTab("Info")'>Info</button>
-    </li> *@
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "Quotes" ? "active" : "")" @onclick='() => SelectTab("Quotes")'>Quotes</button>
+        <button class="nav-link @(activeTab == "User Details" ? "active" : "")" @onclick='() => SelectTab("User Details")'>User Details</button>
     </li>
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "Metrics" ? "active" : "")" @onclick='() => SelectTab("Metrics")'>Metrics</button>
+        <button class="nav-link @(activeTab == "Address" ? "active" : "")" @onclick='() => SelectTab("Address")'>Address</button>
     </li>
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "Admin" ? "active" : "")" @onclick='() => SelectTab("Admin")'>Admin</button>
+        <button class="nav-link @(activeTab == "Settings" ? "active" : "")" @onclick='() => SelectTab("Settings")'>Settings</button>
     </li>
-
 </ul>
 
-<!-- Tab Content -->
-@* @if (activeTab == "Info")
+@if (activeTab == "User Details")
 {
     <div>
-        <h4>Info</h4>
-        <p>This is the Info tab content.</p>
+        <UserDetailModule OnUserDetailsUpdated="RefreshUserData"></UserDetailModule>
     </div>
 }
-else  *@
-@if (activeTab == "Quotes")
+else if (activeTab == "Address")
 {
     <div>
-        <h4>Quotes</h4>
-        <p>This is the Quotes tab content.</p>
+        <UserAddressDetailModule></UserAddressDetailModule>
     </div>
 }
-else if (activeTab == "Admin")
+else if (activeTab == "Settings")
 {
     <div>
-        <h4>Admin</h4>
-        <p>This is the Admin tab content.</p>
+        <p>This is the Settings tab content.</p>
     </div>
 }
-else if (activeTab == "Metrics")
-{
-    <div>
-        <h4>Metrics</h4>
-        <p>This is the Metrics tab content.</p>
-    </div>
-}
-
-
