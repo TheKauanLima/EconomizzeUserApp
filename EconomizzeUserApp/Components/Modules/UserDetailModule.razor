@@ -1,53 +1,75 @@
-﻿@page "/usuario"
+﻿<!-- Injections -->
 @inject IUserService UserService
 @inject IUserLoginService UserLoginService
 @inject IMapper Mapper
 
-<h3 class="text-primary mb-4">Add User Details</h3>
+<!-- Page Title -->
+<h3 class="text-primary mb-4">Adicione Detalhes Pessoais</h3>
 
 <!-- Form to Add or Update State -->
 <EditForm Model="_userDetailModel" OnValidSubmit="HandleSave">
+
     <DataAnnotationsValidator />
     <ValidationSummary class="alert alert-danger" />
 
-    <div class="mb-3">
-        <label class="form-label">First Name</label>
-        <InputText @bind-Value="_userDetailModel.UserFirstName" class="form-control" placeholder="Entre Primeiro Nome" />
+    <!-- Name Fields -->
+    <h5>Entre Nome</h5>
+    <div class="grouped-fields">
+        <div class="mb-3">
+            <label class="form-label">Primeiro Nome</label>
+            <InputText @bind-Value="_userDetailModel.UserFirstName" class="form-control" placeholder="Entre Primeiro Nome" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Segundo Nome</label>
+            <InputText @bind-Value="_userDetailModel.UserMiddleName" class="form-control" placeholder="Entre Segundo Nome" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Sobrenome</label>
+            <InputText @bind-Value="_userDetailModel.UserLastName" class="form-control" placeholder="Entre Sobrenome" />
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Middle Name</label>
-        <InputText @bind-Value="_userDetailModel.UserMiddleName" class="form-control" placeholder="Entre Middle Name" />
+    <!-- Personal Details Fields -->
+    <h5>Entre Dados Pessoias</h5>
+    <div class="grouped-fields">        <div class="mb-3">
+            <label class="form-label">Numero Celular</label>
+            <InputText @bind-Value="_userDetailModel.PhoneNumber" class="form-control" placeholder="Entre Numero Celular (xx-xxxxx-xxxx)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Data de Nascimento</label>
+            <InputDate @bind-Value="_userDetailModel.DateOfBirth" class="form-control" placeholder="Entre Data de Nascimento (25/11/1973)" />
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Last Name</label>
-        <InputText @bind-Value="_userDetailModel.UserLastName" class="form-control" placeholder="Entre Sobrenome" />
+    <!-- Governmental Information Fields -->
+    <h5>Entre Informação Governmental</h5>
+    <div class="grouped-fields">
+        <div class="mb-3">
+            <label class="form-label">CPF</label>
+            <InputText @bind-Value="_userDetailModel.Cpf" class="form-control" placeholder="Entre CPF" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">RG</label>
+            <InputText @bind-Value="_userDetailModel.Rg" class="form-control" placeholder="Entre RG" />
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">CPF</label>
-        <InputText @bind-Value="_userDetailModel.Cpf" class="form-control" placeholder="Entre CPF" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">RG</label>
-        <InputText @bind-Value="_userDetailModel.Rg" class="form-control" placeholder="Entre RG" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Phone Number</label>
-        <InputText @bind-Value="_userDetailModel.PhoneNumber" class="form-control" placeholder="Numero Celular" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Date of Birth</label>
-        <InputDate @bind-Value="_userDetailModel.DateOfBirth" class="form-control" placeholder="Data de Nascimento" />
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Update Details</button>
+    <!-- Button to Update Added Details -->
+    <button type="submit" class="btn btn-primary mt-3">Atualizar Detalhes Pessoais</button>
 </EditForm>
 
 <hr />
 
 
+<style>
+    .grouped-fields {
+        display: flex; /* Enables flexbox layout */
+        align-items: center; /* Vertically aligns items */
+        gap: 20px; /* Adds spacing between the image and the text */
+        margin-bottom: 20px; /* Adds space below the container */
+    }
+</style>

@@ -6,7 +6,8 @@
         public int UserId { get; set; }
         public int NeighborhoodId { get; set; }
         public bool IsExpired { get; set; }
-        public bool IsFullfiled { get; set; }
+        public bool IsFulfilled { get; set; }
+        public String QuotePrice { get; set; } = String.Empty;
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime ExpiresOn { get; set; }

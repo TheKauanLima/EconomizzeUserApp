@@ -52,6 +52,7 @@
                         <tr>
                             <th>Orçamento</th>
                             <th>Status</th>
+                            <th>Preço</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -61,6 +62,16 @@
                             <tr>
                                 <td>Quote @(quote.index + 1)</td>
                                 <td>@(quote.value.IsExpired ? "Expirado" : "Ativo")</td>
+                                <td>
+                                    @if (!quote.value.IsFulfilled)
+                                    {
+                                        <p>Não Cumprido</p>
+                                    }
+                                    else
+                                    {
+                                        <p>quote.value.Equals</p>
+                                    }
+                                </td>
                                 <td>
                                     <button class="btn btn-primary btn-sm" @onclick="() => ViewQuote(quote.value.QuoteId)">View</button>
                                     <button class="btn btn-danger btn-sm" @onclick="() => DeleteQuote(quote.value.QuoteId)">Excluir</button>

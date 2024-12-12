@@ -6,14 +6,14 @@
         <img src="Images/userpfp.jpg" alt="Profile Picture" class="profile-image" />
     </div>
     <div class="profile-message">
-        <p>Hello,</p>
+        <p>Olá,</p>
         @if (UserService.CurrentEntity is not null)
         {
             <h2>@UserService.CurrentEntity.UserFirstName</h2>
         }
         else
         {
-            <h2>USER</h2>
+            <h2>USUÁRIO</h2>
         }
     </div>
 </div>
@@ -70,29 +70,29 @@
 
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "User Details" ? "active" : "")" @onclick='() => SelectTab("User Details")'>User Details</button>
+        <button class="nav-link @(activeTab == "Detalhes Pessoais" ? "active" : "")" @onclick='() => SelectTab("Detalhes Pessoais")'>Detalhes Pessoais</button>
     </li>
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "Address" ? "active" : "")" @onclick='() => SelectTab("Address")'>Address</button>
+        <button class="nav-link @(activeTab == "Endereco" ? "active" : "")" @onclick='() => SelectTab("Endereco")'>Endereço</button>
     </li>
     <li class="nav-item">
-        <button class="nav-link @(activeTab == "Settings" ? "active" : "")" @onclick='() => SelectTab("Settings")'>Settings</button>
+        <button class="nav-link @(activeTab == "Configuracoes" ? "active" : "")" @onclick='() => SelectTab("Configuracoes")'>Configurações</button>
     </li>
 </ul>
 
-@if (activeTab == "User Details")
+@if (activeTab == "Detalhes Pessoais")
 {
     <div>
         <UserDetailModule OnUserDetailsUpdated="RefreshUserData"></UserDetailModule>
     </div>
 }
-else if (activeTab == "Address")
+else if (activeTab == "Endereco")
 {
     <div>
-        <UserAddressDetailModule></UserAddressDetailModule>
+        <SearchZipCodeModule></SearchZipCodeModule>
     </div>
 }
-else if (activeTab == "Settings")
+else if (activeTab == "Configuracoes")
 {
     <div>
         <p>This is the Settings tab content.</p>

@@ -2,7 +2,7 @@ namespace EconomizzeUserApp.Components.Pages
 {
     public partial class DashboardPage
     {
-        private string activeTab = "User Details";
+        private string activeTab = "Detalhes Pessoais";
 
         private void SelectTab(string tabName)
         {

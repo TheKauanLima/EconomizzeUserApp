@@ -11,8 +11,7 @@ namespace EconomizzeUserApp.Services.Classes.Handler
         /// Downloads and decompresses a Gzip file from Google Cloud Storage,
         /// then converts it to a Base64 string for display.
         /// </summary>
-        /// <param name="bucketName">The name of the Google Cloud Storage bucket.</param>
-        /// <param name="fileName">The name of the compressed file (e.g., "image.jpg.gz").</param>
+        /// <param name="imageUrl">The URL where the image is stored on the cloud.</param>
         /// <returns>The Base64 string representing the decompressed image.</returns>
         public static async Task<string> GetBase64ImageFromGzFileAsync(string imageUrl)
         {

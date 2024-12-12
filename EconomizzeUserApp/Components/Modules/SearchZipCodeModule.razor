@@ -1,82 +1,109 @@
-﻿@inject IMapper Mapper
+﻿<!-- Injections -->
+@inject IMapper Mapper
 @inject IStreetService StreetService
 @inject IStreetDetailViewService StreetDetailViewService
 @inject IUserAddressService UserAddressService
 @inject SettingsService SettingsService
 
-<div class="p-4 bg-light">
-    <!-- Street Lookup by Zip Code Form -->
-    <h3 class="text-primary mb-4">Consultar Rua pelo CEP</h3>
-    <EditForm Model="_zipCodeModel" OnValidSubmit="HandleSearch">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="alert alert-danger" />
+<!-- Page Title -->
+<h3 class="text-primary mb-4">Adicione Endereço Atual</h3>
 
+<!-- Street Lookup by Zip Code Form -->
+<h5 class="text-primary mb-4">Consultar Rua pelo CEP</h5>
+<EditForm Model="_zipCodeModel" OnValidSubmit="HandleSearch">
+
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" />
+
+    <div class="grouped-fields">
+        <InputText id="zipCode" @bind-Value="_zipCodeModel.ZipCode"
+                   class="form-control"
+                   placeholder="CEP"
+                   style="width: 300px;" />
+
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+    </div>
+</EditForm>
+
+<hr class="my-4" />
+
+<!-- Add New Street and Address Form -->
+<h5 class="text-primary">Adicionar Nova Rua e Endereço</h5>
+<EditForm Model="_streetDetailViewModel" OnValidSubmit="HandleAdd">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="alert alert-danger" />
+
+    <!-- CEP and Rua Details -->
+    <div class="grouped-fields">
         <div class="mb-3">
-            <InputText id="zipCode" @bind-Value="_zipCodeModel.ZipCode" class="form-control form-control-sm rounded" placeholder="CEP" style="width: 50%;" />
+            <label class="form-label">CEP</label>
+            <InputText id="zipCode" @bind-Value="_streetDetailViewModel.Zipcode" class="form-control" placeholder="CEP" />
         </div>
-
-        <button type="submit" class="btn btn-primary mt-3 rounded" style="width: 50%;">Pesquisar</button>
-    </EditForm>
-
-    <hr class="my-4" />
-
-    <!-- Add New Street and Address Form -->
-    <h5 class="text-primary">Adicionar Nova Rua e Endereço</h5>
-    <EditForm Model="_streetDetailViewModel" OnValidSubmit="HandleAdd">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="alert alert-danger" />
-
         <div class="mb-3">
-            <InputText id="streetName" @bind-Value="_streetDetailViewModel.StreetName" class="form-control form-control-sm rounded" placeholder="Nome da Rua" style="width: 50%;" />
+            <label class="form-label">Nome da Rua</label>
+            <InputText id="streetName" @bind-Value="_streetDetailViewModel.StreetName" class="form-control" placeholder="Nome da Rua" />
         </div>
-
         <div class="mb-3">
-            <InputText id="zipCode" @bind-Value="_streetDetailViewModel.Zipcode" class="form-control form-control-sm rounded" placeholder="CEP" style="width: 50%;" />
+            <label class="form-label">Complemento</label>
+            <InputText id="complement" @bind-Value="_userAddressModel.Complement" class="form-control" placeholder="Complemento" />
         </div>
+    </div>
 
+    <!-- Neighborhood, City, State -->
+    <div class="grouped-fields">
         <div class="mb-3">
-            <InputText id="neighborhood" @bind-Value="_streetDetailViewModel.NeighborhoodName" class="form-control form-control-sm rounded" placeholder="Bairro" style="width: 50%;" />
+            <label class="form-label">Bairro</label>
+            <InputText id="neighborhood" @bind-Value="_streetDetailViewModel.NeighborhoodName" class="form-control" placeholder="Bairro" />
         </div>
-
         <div class="mb-3">
-            <InputText id="city" @bind-Value="_streetDetailViewModel.CityName" class="form-control form-control-sm rounded" placeholder="Cidade" style="width: 50%;" />
+            <label class="form-label">Cidade</label>
+            <InputText id="city" @bind-Value="_streetDetailViewModel.CityName" class="form-control" placeholder="Cidade" />
         </div>
-
         <div class="mb-3">
-            <InputText id="state" @bind-Value="_streetDetailViewModel.StateName" class="form-control form-control-sm rounded" placeholder="Estado" style="width: 50%;" />
+            <label class="form-label">Estado</label>
+            <InputText id="state" @bind-Value="_streetDetailViewModel.StateName" class="form-control" placeholder="Estado" />
         </div>
+    </div>
 
-        <div class="mb-3">
-            <InputText id="complement" @bind-Value="_userAddressModel.Complement" class="form-control form-control-sm rounded" placeholder="Complemento" style="width: 50%;" />
-        </div>
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-success mt-3 rounded">Adicionar</button>
+</EditForm>
 
-        <button type="submit" class="btn btn-success mt-3 rounded" style="width: 50%;">Adicionar</button>
-    </EditForm>
+@if (_searchAttempted && _streetDetailViewModel == null)
+{
+    <div class="alert alert-warning text-center mt-4" style="width: 50%;">
+        Nenhuma rua encontrada com o CEP especificado. Você pode inserir os detalhes manualmente para adicionar uma nova rua.
+    </div>
+}
 
-    @if (_searchAttempted && _streetDetailViewModel == null)
-    {
-        <div class="alert alert-warning text-center mt-4" style="width: 50%;">
-            Nenhuma rua encontrada com o CEP especificado. Você pode inserir os detalhes manualmente para adicionar uma nova rua.
-        </div>
+<hr />
+
+<!-- Display and Manage Current Store Address -->
+@if (_currentUserAddress != null)
+{
+    <div class="mt-4">
+        <h5 class="text-primary">Endereço Atual</h5>
+        <p><strong>Complemento:</strong> @_currentUserAddress.Complement</p>
+        <p><strong>Longitude:</strong> @_currentUserAddress.Longitude</p>
+        <p><strong>Latitude:</strong> @_currentUserAddress.Latitude</p>
+
+        @if (ShowActions)
+        {
+            <button class="btn btn-warning me-2" @onclick="EditCurrentAddress">Atualizar</button>
+            <button class="btn btn-danger" @onclick="DeleteCurrentAddress">Excluir</button>
+        }
+    </div>
+}
+
+<style>
+    .grouped-fields {
+        display: flex; /* Enables flexbox layout */
+        align-items: center; /* Vertically aligns items */
+        gap: 20px; /* Adds spacing between the fields */
+        margin-bottom: 20px; /* Adds space below each row */
     }
 
-    <hr />
-
-    <!-- Display and Manage Current Store Address -->
-    @if (_currentUserAddress != null)
-    {
-        <div class="mt-4">
-            <h5 class="text-primary">Endereço Atual</h5>
-            <p><strong>Complemento:</strong> @_currentUserAddress.Complement</p>
-            <p><strong>Longitude:</strong> @_currentUserAddress.Longitude</p>
-            <p><strong>Latitude:</strong> @_currentUserAddress.Latitude</p>
-
-            @if (ShowActions)
-            {
-                <button class="btn btn-warning me-2" @onclick="EditCurrentAddress">Atualizar</button>
-                <button class="btn btn-danger" @onclick="DeleteCurrentAddress">Excluir</button>
-            }
-        </div>
+    .form-control {
+        width: 100%; /* Ensure the input takes the full width of its container */
     }
-</div>
-
+</style>
